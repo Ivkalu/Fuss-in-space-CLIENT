@@ -4,7 +4,7 @@
 
 void Button::handleEvents()
 {
-	hovering = isHovering(inputHandler->x, inputHandler->y);
+	hovering = isHovering(Game::event.motion.x, Game::event.motion.y);
 	if (Game::event.type == SDL_MOUSEBUTTONDOWN) {
 		if (isHovering(Game::event.motion.x, Game::event.motion.y)) {
 			pressed = true;

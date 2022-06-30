@@ -117,7 +117,9 @@ void MouseTracking::capture()
 #ifdef EXPORT_TO_PNG
 
 	//capturing only the smallest rectangle containing mouse movement
-	string path = PATH "\\" SET "\\";
+	string path = PATH "\\";
+	path.append(SET);
+	path.append("\\");
 	set<string> directory;
 	for (const auto& file : directory_iterator(path))
 	{

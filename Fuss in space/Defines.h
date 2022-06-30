@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "SDL.h"
 
-//#define EXPORT_TO_PNG
+#define EXPORT_TO_PNG
 //#define EXPORT_SCREENSHOT_TO_PNG
 #define BLOCK_BACKEND
 
