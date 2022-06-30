@@ -41,7 +41,7 @@ void Game::init()
 		
 		spriteOrganizer = new SpriteOrganizer();
 		//client.init();
-		mouseTracking.init(screen_size.w, screen_size.h, 11);
+		mouseTracking.init(screen_size.w, screen_size.h);
 		FontManager::init();
 
 		isRunning = true;

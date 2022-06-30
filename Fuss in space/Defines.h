@@ -9,8 +9,8 @@
 
 extern const char* DEFAULT_ADDRESS;
 extern const char* SET;
+extern const char* PATH;
 extern SDL_Rect screen_size;
-#define PATH "E:\\datasets\\dataset2_0"
 
 #define DEBUG_PRINTS
 

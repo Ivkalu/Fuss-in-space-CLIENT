@@ -16,7 +16,7 @@
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include "stb_image/stb_image_resize.h"
 
-
+#define MOUSE_CAPTURE_MATRIX_SIZE 80
 
 using std::experimental::filesystem::directory_iterator;
 using std::set;
@@ -24,23 +24,12 @@ using std::string;
 using std::to_string;
 
 
-void MouseTracking::init(int _w, int _h, int _brushSize = 1) 
+void MouseTracking::init(int _w, int _h, int _brushSize) 
 {
 	
 	brushSize = _brushSize;
 	xMin = w = _w + brushSize;
 	yMin = h = _h + brushSize;
-
-	size_t img_size = w * h;
-	mouseMovementMatrix = (uint8_t*)malloc(img_size * sizeof(uint8_t));
-	
-	if (mouseMovementMatrix == NULL) {
-		eprintf("Couldn't create matrix!\n");
-	}
-	
-	for (int i = 0; i < img_size; i++) {
-		mouseMovementMatrix[i] = (uint8_t)255;
-	}
 
 	cprintf("Mouse tracker initialised!\n");
 
@@ -50,74 +39,57 @@ void MouseTracking::init(int _w, int _h, int _brushSize = 1)
 void MouseTracking::reset() 
 {
 
-	for (int i = xMin; i <= xMax; i++) {
-		for (int j = yMin; j <= yMax; j++) {
-			if (i >= 0 && i < w && j >= 0 && j < h) {
-				mouseMovementMatrix[i + j * w] = 255;
-			}
-		}
-	}
+	pointsDrew.clear();
 	xMax = yMax = 0;
 	xMin = w;
 	yMin = h;
 
 }
 
-
-void MouseTracking::drawLine(int x, int y, int xProsli, int yProsli)
-{
-
-	double length = max(1.0, sqrt(pow(x - xProsli, 2) + pow(y - yProsli, 2)));
-
-	for (double i = 0; i <= length; i += 1) {
-		drawPoint((int)(x + (xProsli - x) / length * i), (int)(y + (yProsli - y) / length * i));
-	}
-
-}
-
-
-void MouseTracking::drawPoint(int x, int y)
-{
-
-	for (int i = x; i < x + brushSize; i++) {
-		for (int j = y; j < y + brushSize; j++) {
-			if (i >= 0 && i < w && j >= 0 && j < h) {
-				xMin = i > xMin ? xMin : i;
-				yMin = j > yMin ? yMin : j;
-				xMax = i < xMax ? xMax : i;
-				yMax = j < yMax ? yMax : j;
-				mouseMovementMatrix[i + j * w] = (uint8_t)0;
-			}
-		}
-	}
-
-}
-
-
 void MouseTracking::capture() 
 {
+	unsigned char* img = new unsigned char[MOUSE_CAPTURE_MATRIX_SIZE * MOUSE_CAPTURE_MATRIX_SIZE];
+	
+	for (int i = 0; i < MOUSE_CAPTURE_MATRIX_SIZE * MOUSE_CAPTURE_MATRIX_SIZE; i++) {
+		img[i] = 255;
+	}
+	brushSize = 1;
+	auto drawPoint = [&](int x, int y) mutable
+	{
+		for (int i = x; i < x + brushSize; i++) {
+			for (int j = y; j < y + brushSize; j++) {
+				if (i >= 0 && i < MOUSE_CAPTURE_MATRIX_SIZE && j >= 0 && j < MOUSE_CAPTURE_MATRIX_SIZE) {
+					img[i + j * MOUSE_CAPTURE_MATRIX_SIZE] = 0;
+				}
+			}
+		}
+	};
 
+	auto drawLine = [this, &drawPoint](int x, int y, int xProsli, int yProsli)
+	{
+		double length = max(1.0, sqrt(pow(x - xProsli, 2) + pow(y - yProsli, 2)));
+
+		for (double i = 0; i <= length; i += 1) {
+			drawPoint((int)(x + (xProsli - x) / length * i), (int)(y + (yProsli - y) / length * i));
+		}
+	};
+	
 	uint16_t width = xMax - xMin + 1;
 	uint16_t height = yMax - yMin + 1;
 	size_t img_size = width * height;
-
-	unsigned char* img = (unsigned char*)malloc(img_size);
-
-	if (img == NULL) {
-		eprintf("Unable to allocate memory for the image!\n");
-		exit(1);
+	for (std::vector<std::pair<int, int>>::iterator it = pointsDrew.begin(); it != pointsDrew.end(); it++) {
+		it->first = (int)(((float)(it->first - xMin)) / width * MOUSE_CAPTURE_MATRIX_SIZE);
+		it->second = (int)(((float)(it->second - yMin)) / height * MOUSE_CAPTURE_MATRIX_SIZE);
 	}
-
-	for (int i = xMin; i <= xMax; i++) {
-		for (int j = yMin; j <= yMax; j++) {
-			img[i - xMin + width * (j - yMin)] = mouseMovementMatrix[i + j * w];
-		}
+	for (std::vector<std::pair<int, int>>::iterator it = pointsDrew.begin() + 1; it != pointsDrew.end(); it++) {
+		drawLine(it->first, it->second, (it - 1)->first, (it - 1)->second);
 	}
 
 #ifdef EXPORT_TO_PNG
 
 	//capturing only the smallest rectangle containing mouse movement
-	string path = PATH "\\";
+	string path = PATH;
+	path.append("\\");
 	path.append(SET);
 	path.append("\\");
 	set<string> directory;
@@ -130,7 +102,7 @@ void MouseTracking::capture()
 
 	path += to_string(i) + ".png";
 
-	if (!stbi_write_png(path.c_str(), width, height, 1, img, width)) {
+	if (!stbi_write_png(path.c_str(), MOUSE_CAPTURE_MATRIX_SIZE, MOUSE_CAPTURE_MATRIX_SIZE, 1, img, MOUSE_CAPTURE_MATRIX_SIZE)) {
 		eprintf("Problem with writing image!\n");
 		exit(1);
 	}
@@ -195,8 +167,15 @@ void MouseTracking::handleEvents()
 	}
 
 	if (pressed) {
-		drawLine(inputHandler->x, inputHandler->y, xPrevious, yPrevious);
+		xMin = inputHandler->x > xMin ? xMin : inputHandler->x;
+		yMin = inputHandler->y > yMin ? yMin : inputHandler->y;
+		xMax = inputHandler->x < xMax ? xMax : inputHandler->x;
+		yMax = inputHandler->y < yMax ? yMax : inputHandler->y;
+		pointsDrew.push_back(std::make_pair(inputHandler->x, inputHandler->y));
+
+		//drawLine(inputHandler->x, inputHandler->y, xPrevious, yPrevious);
 	}
+
 	xPrevious = inputHandler->x;
 	yPrevious = inputHandler->y;
 }
