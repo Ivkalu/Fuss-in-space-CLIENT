@@ -16,7 +16,7 @@
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include "stb_image/stb_image_resize.h"
 
-#define MOUSE_CAPTURE_MATRIX_SIZE 80
+#define MOUSE_CAPTURE_MATRIX_SIZE 40
 
 using std::experimental::filesystem::directory_iterator;
 using std::set;
@@ -48,9 +48,10 @@ void MouseTracking::reset()
 
 void MouseTracking::capture() 
 {
-	unsigned char* img = new unsigned char[MOUSE_CAPTURE_MATRIX_SIZE * MOUSE_CAPTURE_MATRIX_SIZE];
+	size_t img_size = MOUSE_CAPTURE_MATRIX_SIZE * MOUSE_CAPTURE_MATRIX_SIZE;
+	unsigned char* img = new unsigned char[img_size];
 	
-	for (int i = 0; i < MOUSE_CAPTURE_MATRIX_SIZE * MOUSE_CAPTURE_MATRIX_SIZE; i++) {
+	for (int i = 0; i < img_size; i++) {
 		img[i] = 255;
 	}
 	brushSize = 1;
@@ -76,7 +77,7 @@ void MouseTracking::capture()
 	
 	uint16_t width = xMax - xMin + 1;
 	uint16_t height = yMax - yMin + 1;
-	size_t img_size = width * height;
+	
 	for (std::vector<std::pair<int, int>>::iterator it = pointsDrew.begin(); it != pointsDrew.end(); it++) {
 		it->first = (int)(((float)(it->first - xMin)) / width * MOUSE_CAPTURE_MATRIX_SIZE);
 		it->second = (int)(((float)(it->second - yMin)) / height * MOUSE_CAPTURE_MATRIX_SIZE);
@@ -106,36 +107,36 @@ void MouseTracking::capture()
 		eprintf("Problem with writing image!\n");
 		exit(1);
 	}
-
+	stbi_image_free(img);
 #endif
 
-#ifdef EXPORT_SCREENSHOT_TO_PNG
-
-	//capturing whole screen
-	string s1 = PATH "screenshots\\screenshot.png";
-	stbi_write_png(s1.c_str(), w, h, 1, (unsigned char*)mouseMovementMatrix, w);
-
-#endif
 
 #ifndef BLOCK_BACKEND
 
 	//sending to the backend
 	uint8_t code[1] = { (uint8_t)S::S_SCREENSHOT_TAKEN };
-	uint8_t W[2] = { (uint8_t)((width >> 8) & 0xFF), (uint8_t)(width & 0xFF) };
-	uint8_t H[2] = { (uint8_t)((height >> 8) & 0xFF), (uint8_t)(height & 0xFF) };
+	uint8_t W[2] = { (uint8_t)((MOUSE_CAPTURE_MATRIX_SIZE >> 8) & 0xFF), (uint8_t)(MOUSE_CAPTURE_MATRIX_SIZE & 0xFF) };
+	uint8_t H[2] = { (uint8_t)((MOUSE_CAPTURE_MATRIX_SIZE >> 8) & 0xFF), (uint8_t)(MOUSE_CAPTURE_MATRIX_SIZE & 0xFF) };
 
-	uint8_t* _sendbuf = (uint8_t*)malloc(img_size + 5);
+	uint8_t* _sendbuf = new uint8_t[img_size + 5];
+	if (_sendbuf == NULL)
+	{
+		exit(1);
+	}
 	memcpy(_sendbuf, code, 1);
 	memcpy(_sendbuf + 1, W, 2);
 	memcpy(_sendbuf + 3, H, 2);
 	memcpy(_sendbuf + 5, (uint8_t*)img, img_size);
 
 	const char* sendbuf = (const char*)_sendbuf;
-	Game::client.sendMessege(sendbuf, (int)img_size + 5);
-
+	if (pointsDrew.size() > 10) {
+		Game::client.sendMessege(sendbuf, (int)img_size + 5);
+	}
+	
+	delete[] _sendbuf;
 #endif
 
-	stbi_image_free(img);
+	delete[] img;
 	reset();
 
 }
