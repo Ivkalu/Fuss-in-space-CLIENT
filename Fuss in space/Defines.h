@@ -3,9 +3,14 @@
 #include <stdint.h>
 #include "SDL.h"
 
-#define EXPORT_TO_PNG
+//#define EXPORT_TO_PNG
 //#define EXPORT_SCREENSHOT_TO_PNG
-#define BLOCK_BACKEND
+//#define BLOCK_BACKEND
+#define DEBUG_PRINTS
+#define TITLE "Fuss in space"
+#define WINDOW_WIDTH 1920//1280
+#define WINDOW_HEIGHT 1040//720
+
 
 #define WINDOW_WIDTH 1920//1280
 #define WINDOW_HEIGHT 1040//720
@@ -28,9 +33,12 @@ extern const char* PATH;
 extern SDL_Rect screen_size;
 
 
+<<<<<<< HEAD
 
 //funcs
 #define DEBUG_PRINTS
+=======
+>>>>>>> 5261913f04597a8da383b27696458fed177b202a
 
 #ifdef DEBUG_PRINTS
 # define cprintf(...) {printf("[" __FILE__ "] "); printf(__VA_ARGS__);}
@@ -40,7 +48,10 @@ extern SDL_Rect screen_size;
 
 #define eprintf(...) {fprintf(stderr, "[" __FILE__ "] "); fprintf(stderr, __VA_ARGS__);}
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5261913f04597a8da383b27696458fed177b202a
 
 inline uint16_t convertWidth(uint16_t x)
 {

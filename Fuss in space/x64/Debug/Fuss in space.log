@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 ﻿  Fuss in space.vcxproj -> E:\source\Fuss-in-space-CLIENT\x64\Debug\Fuss in space.exe
+=======
+﻿LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/LTCG' specification
+  LINK : /LTCG specified but no code generation required; remove /LTCG from the link command line to improve linker performance
+  Fuss in space.vcxproj -> C:\Users\Ivana\Documents\Luka\Fuss-in-space-CLIENT\x64\Debug\Fuss in space.exe
+>>>>>>> 5261913f04597a8da383b27696458fed177b202a
