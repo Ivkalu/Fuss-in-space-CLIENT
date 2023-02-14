@@ -63,7 +63,7 @@ void InputHandler::send()
 	Message<InputHandler> d;
 	d.data = *this;
 	memcpy(sendbuf + 1, d.data_ptr, 12);
-	Game::client.sendMessege((const char*)sendbuf, 13);
+	client.sendMessege((const char*)sendbuf, 13);
 	jump = false;
 
 }

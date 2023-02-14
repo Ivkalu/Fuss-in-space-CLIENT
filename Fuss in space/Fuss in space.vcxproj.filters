@@ -35,9 +35,6 @@
     <ClCompile Include="InputHandler.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
-    <ClCompile Include="GameContainer.cpp">
-      <Filter>Sprites</Filter>
-    </ClCompile>
     <ClCompile Include="Defines.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -75,7 +72,7 @@
     <ClInclude Include="InputHandler.h">
       <Filter>Managers</Filter>
     </ClInclude>
-    <ClInclude Include="GameContainer.h">
+    <ClInclude Include="MuteableSprite.h">
       <Filter>Sprites</Filter>
     </ClInclude>
   </ItemGroup>

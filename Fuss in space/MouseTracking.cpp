@@ -16,7 +16,7 @@
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include "stb_image/stb_image_resize.h"
 
-#define MOUSE_CAPTURE_MATRIX_SIZE 80
+#define MOUSE_CAPTURE_MATRIX_SIZE 50
 
 using std::experimental::filesystem::directory_iterator;
 using std::set;
@@ -109,20 +109,12 @@ void MouseTracking::capture()
 
 #endif
 
-#ifdef EXPORT_SCREENSHOT_TO_PNG
-
-	//capturing whole screen
-	string s1 = PATH "screenshots\\screenshot.png";
-	stbi_write_png(s1.c_str(), w, h, 1, (unsigned char*)mouseMovementMatrix, w);
-
-#endif
-
 #ifndef BLOCK_BACKEND
 
 	//sending to the backend
 	uint8_t code[1] = { (uint8_t)S::S_SCREENSHOT_TAKEN };
-	uint8_t W[2] = { (uint8_t)((width >> 8) & 0xFF), (uint8_t)(width & 0xFF) };
-	uint8_t H[2] = { (uint8_t)((height >> 8) & 0xFF), (uint8_t)(height & 0xFF) };
+	uint8_t W[2] = { (uint8_t)((MOUSE_CAPTURE_MATRIX_SIZE >> 8) & 0xFF), (uint8_t)(MOUSE_CAPTURE_MATRIX_SIZE & 0xFF) };
+	uint8_t H[2] = { (uint8_t)((MOUSE_CAPTURE_MATRIX_SIZE >> 8) & 0xFF), (uint8_t)(MOUSE_CAPTURE_MATRIX_SIZE & 0xFF) };
 
 	uint8_t* _sendbuf = (uint8_t*)malloc(img_size + 5);
 	memcpy(_sendbuf, code, 1);
@@ -131,7 +123,7 @@ void MouseTracking::capture()
 	memcpy(_sendbuf + 5, (uint8_t*)img, img_size);
 
 	const char* sendbuf = (const char*)_sendbuf;
-	Game::client.sendMessege(sendbuf, (int)img_size + 5);
+	client.sendMessege(sendbuf, (int)img_size + 5);
 
 #endif
 

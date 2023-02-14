@@ -7,7 +7,7 @@
 #include "InputHandler.h"
 
 
-
+extern Client client;
 
 
 class Game
@@ -33,7 +33,7 @@ public:
 	bool running() { return isRunning; }
 
 	static SDL_Renderer* renderer;
-	static Client client;
+	
 	static SDL_Event event;
 
 };

@@ -160,7 +160,6 @@
     <ClCompile Include="Defines.cpp" />
     <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameContainer.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MouseTracking.cpp" />
@@ -176,7 +175,7 @@
     <ClInclude Include="FontManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Button.h" />
-    <ClInclude Include="GameContainer.h" />
+    <ClInclude Include="MuteableSprite.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="MouseTracking.h" />
     <ClInclude Include="Sprite.h" />

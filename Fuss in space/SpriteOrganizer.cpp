@@ -64,7 +64,7 @@ SpriteOrganizer::SpriteOrganizer()
 		memcpy(sendbuf_ + 21, brawler, 1);
 
 		const char* _sendbuf = (const char*)sendbuf;
-		Game::client.sendMessege(_sendbuf, 22);
+		client.sendMessege(_sendbuf, 22);
 		});
 
 	joinLobbyMenuC->addSprite<Button>("assets/Buttons/Back.png", nullptr, new SDL_Rect{ 50,250,44 * 5,16 * 5 }, []() {
@@ -101,14 +101,14 @@ SpriteOrganizer::SpriteOrganizer()
 		memcpy(sendbuf_ + 21, brawler, 1);
 
 		const char* _sendbuf = (const char*)sendbuf;
-		Game::client.sendMessege(_sendbuf, 22);
+		client.sendMessege(_sendbuf, 22);
 		});
 
 	// ****** LOBBY WAITING MENU ****** //
 
 	waitingMenuC->addSprite<Button>("assets/Buttons/Start.png", nullptr, new SDL_Rect{ 50,450,44 * 5,16 * 5 }, []() {
 		uint8_t sendbuf[] = { S_START_GAME };
-		Game::client.sendMessege((const char*)sendbuf, 1);
+		client.sendMessege((const char*)sendbuf, 1);
 		});
 
 	waitingMenuC->addSprite(Playr1TextBox = new TextBox(new SDL_Rect{ 50,50,44 * 5,16 * 5 }));
@@ -117,7 +117,7 @@ SpriteOrganizer::SpriteOrganizer()
 	waitingMenuC->addSprite(Playr4TextBox = new TextBox(new SDL_Rect{ 50,350,44 * 5,16 * 5 }));
 	waitingMenuC->addSprite<Button>("assets/Buttons/Back.png", nullptr, new SDL_Rect{ 50,550,44 * 5,16 * 5 }, []() {
 		uint8_t sendbuf[] = { S_LEAVE_LOBBY };
-		Game::client.sendMessege((const char*)sendbuf, 1);
+		client.sendMessege((const char*)sendbuf, 1);
 		});
 
 	//mainMenuC->addSprite<Player>("assets/Characters/Rat/Rat1.png", NULL,  new SDL_Rect{ 500,500, 50, 100 });

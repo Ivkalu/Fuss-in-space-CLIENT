@@ -19,9 +19,21 @@ SDL_Texture* TextureManager::LoadTexture(const char* texture)
 	
 }
 
+void TextureManager::DestroyTextures() {
+	for (auto it = textures.begin(); it != textures.end(); it++) {
+		SDL_DestroyTexture(it->second);
+	}
+}
+
+
 void TextureManager::Draw(SDL_Texture* tex, const SDL_Rect* src, const SDL_Rect* dst)
 {
-	if(tex != nullptr)  SDL_RenderCopy(Game::renderer, tex, src, dst);
+	if (tex != nullptr && dst != nullptr) {
+		SDL_RenderCopy(Game::renderer, tex, src, convertRect(dst));
+	}
+	else if (tex != nullptr) {
+		SDL_RenderCopy(Game::renderer, tex, src, nullptr);
+	}
 }
 
 //napraviti da se tekstura ucita samo prvi put na spriteu, ovisno o adresi koja je poslana

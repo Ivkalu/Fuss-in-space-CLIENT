@@ -4,6 +4,9 @@
 #include "Game.h"
 #include "SpriteOrganizer.h"
 
+
+//0 for success,
+//1 for failure
 int Client::init() {
 
     // Initialize Winsock

@@ -10,7 +10,7 @@
 #include "InputHandler.h"
 
 SDL_Renderer* Game::renderer = nullptr;
-Client Game::client;
+Client client;
 SDL_Event Game::event;
 
 
@@ -91,9 +91,11 @@ void Game::render()
 
 void Game::clean()
 {
+	TextureManager::DestroyTextures();
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
+	
 	cprintf("Game Cleaned!\n");
 }
 

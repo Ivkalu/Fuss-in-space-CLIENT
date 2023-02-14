@@ -68,9 +68,6 @@ int main(int argc, char* argv[])
 		{
 			SDL_Delay(frameDelay - frameTime);
 		}
-		else {
-			cprintf("Latency: %d\n", frameTime - frameDelay);
-		}
 
 	}
 

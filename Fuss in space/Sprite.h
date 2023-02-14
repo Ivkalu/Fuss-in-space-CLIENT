@@ -12,9 +12,12 @@ protected:
 
 public:
 
-	Sprite(const char *c, SDL_Rect* src, SDL_Rect* dst);
+	Sprite(const char* c, SDL_Rect* src, SDL_Rect* dst);
 	
-	virtual ~Sprite();
+	//copy constructor and copy assignemnt are disabled since they make no sense in this context
+	Sprite& operator=(const Sprite& other) = delete;
+	Sprite(const Sprite& other) = delete;
+
 	virtual void handleEvents(){}
 	virtual void update(){}
 	virtual void render();
@@ -22,6 +25,7 @@ public:
 	{
 		active = true;
 	}
+	
 	bool isActive()
 	{
 		return active;

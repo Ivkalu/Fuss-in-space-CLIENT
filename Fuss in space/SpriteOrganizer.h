@@ -1,7 +1,7 @@
 #pragma once
 #include "Container.h"
 #include "TextBox.h"
-#include "GameContainer.h"
+//#include "GameContainer.h"
 
 
 class SpriteOrganizer : public Container
@@ -13,7 +13,18 @@ public:
 	//void kill() override;
 
 	Container* waitingMenuC;
-	GameContainer* gameMenuC;
+	struct GameContainer : public Container {
+		GameContainer() :Container("assets/Background.png", nullptr, nullptr){}
+
+		void update() override {
+			Container::update();
+			inputHandler->send();
+		};
+
+		void clear() {
+			Container::sprites.clear();
+		};
+	} *gameMenuC;
 	static Container* mainMenuC;
 	TextBox* Playr1TextBox;
 	TextBox* Playr2TextBox;
